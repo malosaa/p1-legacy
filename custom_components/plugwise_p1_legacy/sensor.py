@@ -16,12 +16,12 @@ _LOGGER = logging.getLogger(__name__)
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=30)
 
-SENSOR_PREFIX = 'PSP1 '
+SENSOR_PREFIX = 'P1_LEGACY'
 SENSOR_TYPES = {
     'electricity_consumed_point': ['Current Consumed Power', 'W', 'mdi:flash'],
-    'electricity_consumed_offpeak_interval': ['Interval Off Peak Consumed Power', 'Wh', 'mdi:flash'],
+    'electricity_consumed_off_peak_interval': ['Interval Off Peak Consumed Power', 'Wh', 'mdi:flash'],
     'electricity_consumed_peak_interval': ['Interval Peak Consumed Power', 'Wh', 'mdi:flash'],
-    'electricity_consumed_offpeak_cumulative': ['Cumulative Off Peak Consumed Power', 'Wh', 'mdi:flash'],
+    'electricity_consumed_off_peak_cumulative': ['Cumulative Off Peak Consumed Power', 'Wh', 'mdi:flash'],
     'electricity_consumed_peak_cumulative': ['Cumulative Peak Consumed Power', 'Wh', 'mdi:flash'],
     'electricity_produced_point': ['Current Produced Power', 'W', 'mdi:white-balance-sunny'],
     'electricity_produced_offpeak_interval': ['Interval Off Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
