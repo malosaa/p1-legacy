@@ -16,7 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=30)
 
-SENSOR_PREFIX = 'P1_LEGACY'
+SENSOR_PREFIX = 'P1_LEGACY_'
 SENSOR_TYPES = {
     'electricity_consumed_point': ['Current Consumed Power', 'W', 'mdi:flash'],
     'electricity_consumed_off_peak_interval': ['Interval Off Peak Consumed Power', 'Wh', 'mdi:flash'],
