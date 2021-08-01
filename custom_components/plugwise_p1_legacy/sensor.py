@@ -1,5 +1,4 @@
 """ P1-legacy sensor module."""
-
 import logging
 from datetime import timedelta
 import voluptuous as vol
@@ -14,18 +13,20 @@ from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=30)
+MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=10)
 
 SENSOR_PREFIX = "P1_LEGACY_"
 SENSOR_TYPES = {
-    "electricity_consumed_offpeak_interval": ["Electricity Consumed Off Peak Interval", "energy", "Wh", "mdi:flash",],
+    "electricity_consumed_point": [ "Electricity Consumed Point", "power", "W", "mdi:flash",],
+    "electricity_produced_point": [ "Electricity Produced Point", "power", "W", "mdi:flash",],
+    "electricity_consumed_offpeak_interval": [ "Electricity Consumed Off Peak Interval", "energy", "Wh", "mdi:flash",],
     "electricity_consumed_peak_interval": [ "Electricity Consumed Peak Interval", "energy", "Wh", "mdi:flash",],
     "electricity_consumed_offpeak_cumulative": [ "Electricity Consumed Off Peak Cumulative", "energy", "Wh", "mdi:flash",],
     "electricity_consumed_peak_cumulative": [ "Electricity Consumed Peak Cumulative", "energy", "Wh", "mdi:flash",],
     "electricity_produced_offpeak_interval": [ "Electricity Produced Off Peak Interval", "energy", "Wh", "mdi:white-balance-sunny",],
     "electricity_produced_peak_interval": [ "Electricity Produced Peak Interval", "energy", "Wh", "mdi:white-balance-sunny",],
     "electricity_produced_offpeak_cumulative": [ "Electricity Produced Off Peak Cumulative", "energy", "Wh", "mdi:white-balance-sunny",],
-    "electricity_produced_peak_cumulative": [ "Electricity Produced Peak Cumulative", "energy", "Wh", "mdi:white-balance-sunny", ],
+    "electricity_produced_peak_cumulative": [ "Electricity Produced Peak Cumulative", "energy", "Wh", "mdi:white-balance-sunny",],
     "net_electricity_cumulative": [ "Net Electricity Cumulative", "power", "W", "mdi:flash",],
     "net_electricity_point": ["Net Electricity Point", "power", "W", "mdi:flash"],
     "gas_consumed_interval": ["Gas Consumed Interval", None, "m3", "mdi:gas-cylinder"],
@@ -46,6 +47,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 class PlugWiseP1Api:
     """ Plugwise P1 API class."""
+
     def __init__(self, host, user, password):
         self.session = requests.Session()
         self.host = host
@@ -297,32 +299,36 @@ class PlugwiseSmileSensor(Entity):
         """Get the latest data and use it to update our sensor state."""
         self.data.update()
 
-        if self.type == "electricity_consumed_offpeak_interval":
+        if self.sr_type == "electricity_consumed_point":
+            self._state = self.data.get_electricity_consumed_point()
+        if self.sr_type == "electricity_produced_point":
+            self._state = self.data.get_electricity_produced_point()
+        if self.sr_type == "electricity_consumed_offpeak_interval":
             self._state = self.data.get_electricity_consumed_offpeak_interval()
-        elif self.type == "electricity_consumed_peak_interval":
+        if self.sr_type == "electricity_consumed_peak_interval":
             self._state = self.data.get_electricity_consumed_peak_interval()
-        elif self.type == "electricity_consumed_offpeak_cumulative":
+        if self.sr_type == "electricity_consumed_offpeak_cumulative":
             self._state = self.data.get_electricity_consumed_offpeak_cumulative()
-        elif self.type == "electricity_consumed_peak_cumulative":
+        if self.sr_type == "electricity_consumed_peak_cumulative":
             self._state = self.data.get_electricity_consumed_peak_cumulative()
-        elif self.type == "electricity_produced_offpeak_interval":
+        if self.sr_type == "electricity_produced_offpeak_interval":
             self._state = self.data.get_electricity_produced_offpeak_interval()
-        elif self.type == "electricity_produced_peak_interval":
+        if self.sr_type == "electricity_produced_peak_interval":
             self._state = self.data.get_electricity_produced_peak_interval()
-        elif self.type == "electricity_produced_offpeak_cumulative":
+        if self.sr_type == "electricity_produced_offpeak_cumulative":
             self._state = self.data.get_electricity_produced_offpeak_cumulative()
-        elif self.type == "electricity_produced_peak_cumulative":
+        if self.sr_type == "electricity_produced_peak_cumulative":
             self._state = self.data.get_electricity_produced_peak_cumulative()
-        elif self.type == "gas_consumed_interval":
+        if self.sr_type == "gas_consumed_interval":
             self._state = self.data.get_gas_consumed_interval()
-        elif self.type == "gas_consumed_cumulative":
+        if self.sr_type == "gas_consumed_cumulative":
             self._state = self.data.get_gas_consumed_cumulative()
-        elif self.type == "net_electricity_point":
+        if self.sr_type == "net_electricity_point":
             self._state = (
                 self.data.get_electricity_consumed_point()
                 - self.data.get_electricity_produced_point()
             )
-        elif self.type == "net_electricity_cumulative":
+        if self.sr_type == "net_electricity_cumulative":
             self._state = (
                 self.data.get_electricity_consumed_offpeak_cumulative()
                 + self.data.get_electricity_consumed_peak_cumulative()
